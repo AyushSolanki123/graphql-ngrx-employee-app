@@ -1,0 +1,17 @@
+.navbar {
+  min-height: 3.5em;
+  font-size: large;
+}
+
+.footer {
+  background-color: black;
+  color: white;
+  text-align: center;
+  min-height: 2em;
+}
+
+article {
+  flex: 1 !important;
+  padding: 8px;
+  background-color: aliceblue;
+}
