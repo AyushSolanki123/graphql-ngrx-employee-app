@@ -14,6 +14,14 @@ const EmployeeSchema = new Schema(
         lastName: {
             type: Schema.Types.String,
         },
+        email: {
+            type: Schema.Types.String,
+            required: true,
+        },
+        password: {
+            type: Schema.Types.String,
+            required: true,
+        },
         dob: {
             type: Schema.Types.String,
             required: true,

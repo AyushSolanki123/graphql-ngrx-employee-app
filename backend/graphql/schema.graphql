@@ -24,6 +24,8 @@ input AddEmployeeInput {
     lastName: String
     dob: String
     company: String
+    password: String!
+    email: String!
 }
 
 input UpdatedEmployeeInput {

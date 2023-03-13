@@ -1,50 +1,80 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
+const { graphqlHTTP } = require("express-graphql");
+const { buildSchema } = require("graphql");
 const { default: mongoose } = require("mongoose");
-const { ApolloServer } = require("apollo-server-express");
+
 const dbConfig = require("./config/db.config");
 const { typeDefs, resolvers } = require("./graphql");
+const { logger } = require("./utils/Logger");
+const { verifyToken } = require("./middleware/auth");
 
-// define port to run the server
+// PORT
 const PORT = 4000;
 
-// Create Apollo Server Instance
-const server = new ApolloServer({ typeDefs, resolvers });
+// Create Schema and rootValue
+const schema = buildSchema(typeDefs);
+const rootValue = { ...resolvers.Query, ...resolvers.Mutation };
 
-async function startServer() {
-    await server.start();
+// Create the express app
+const app = express();
 
-    // create an instance of express server
-    const app = express();
-    app.use(cors());
-    app.use(bodyParser());
+// Add the middlewares
+app.use(cors());
+app.use(bodyParser());
 
-    // apply express middleware to apollo server
-    server.applyMiddleware({ app });
+// Auth Routes Added
+app.use("/", require("./routes"));
 
-    mongoose
-        .connect(dbConfig.url, {})
-        .then(() => {
-            console.log("Connected to mongodb successfully");
+// Allow requests to the GraphiQL endpoint without authentication
+app.use(
+    "/graphiql",
+    graphqlHTTP({
+        schema,
+        rootValue,
+        graphiql: true,
+    })
+);
 
-            app.listen(PORT, (err) => {
-                if (err) {
-                    console.log("Unable to start the server");
-                    console.log(err);
-                    process.exit();
-                }
-                console.log(
-                    `Server started successfully at url: http://localhost:${PORT}${server.graphqlPath}`
-                );
-            });
-        })
-        .catch((error) => {
-            console.log("Unable to connect to mongodb");
-            console.log(error);
-            process.exit();
+// Authenticate requests to the GraphQL endpoint
+app.use("/graphql", verifyToken);
+
+// Handle authenticated requests to the GraphQL endpoint
+app.use(
+    "/graphql",
+    graphqlHTTP({
+        schema: buildSchema(typeDefs),
+        rootValue: { ...resolvers.Query, ...resolvers.Mutation },
+        graphiql: false,
+    })
+);
+
+// Global Error Handler
+app.use("/", (err, req, res, next) => {
+    logger.error("Error occurred");
+    logger.log(JSON.stringify(err));
+    logger.error(err.errorMessage || "Server error occurred");
+    res.status(err.statusCode || 500);
+    res.json({ errorMessage: err.errorMessage || "Server error occurred" });
+});
+
+mongoose
+    .connect(dbConfig.url, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        logger.log("Connected to mongodb Successfully");
+
+        app.listen(PORT, (err) => {
+            if (err) {
+                logger.error("Unable to start the serer");
+                logger.error(JSON.stringify(err));
+                process.exit();
+            }
+            logger.log(`Server started at http://localhost:${PORT}`);
         });
-}
-
-startServer();
+    })
+    .catch((error) => {
+        logger.error("Unable to connect to mongodb");
+        logger.error(JSON.stringify(error));
+        process.exit();
+    });

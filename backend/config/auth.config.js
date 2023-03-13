@@ -1,4 +1,5 @@
 module.exports = {
-    accessKey: "jwt-access-key",
+    jwtKey: "jwt-access-key",
     refreshKey: "jwt-refresh-key",
+    tokenValidity: "20m",
 };

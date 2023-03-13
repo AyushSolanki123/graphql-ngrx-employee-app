@@ -10,7 +10,7 @@ const queries = {
             };
         });
     },
-    getEmployee: async (_, { id }) => {
+    getEmployee: async ({ id }) => {
         const employee = await Employee.findOne({
             id,
             isDeleted: false,

@@ -1,20 +1,28 @@
-const jwt = require("jsonwebtoken");
-const authConfig = require("../config/auth.config");
+const ErrorBody = require("../Utils/ErrorBody");
+const { validateAuthToken } = require("../utils/Helper");
 
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
     const authorizationHeader = req.headers["authorization"];
-    const authToken = authorizationHeader && authorizationHeader.split(" ")[1];
-    if (authToken == null) {
-        return res.status(401).send({ message: "Employee not Authentication" });
-    }
-
-    jwt.verify(authToken, authConfig.accessKey, (err, user) => {
-        if (err) {
-            return res.status(401).send({ message: "Token expired" });
+    const _authToken = authorizationHeader && authorizationHeader.split(" ")[1];
+    if (_authToken) {
+        try {
+            const response = await validateAuthToken(_authToken);
+            req.email = response.email;
+            req.id = response.id;
+            next();
+        } catch (error) {
+            next(
+                new ErrorBody(
+                    401,
+                    error.message || "No auth token found in the request"
+                )
+            );
         }
-        req.user = user;
-        next();
-    });
+    } else {
+        next(new ErrorBody(401, "No auth token found in the request"));
+    }
 }
 
-module.exports = { verifyToken };
+module.exports = {
+    verifyToken: verifyToken,
+};

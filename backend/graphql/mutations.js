@@ -1,7 +1,7 @@
 const Employee = require("../model/Employee").model;
 
 const mutations = {
-    addEmployee: async (_, { input }) => {
+    addEmployee: async ({ input }) => {
         const count = await Employee.find({}).count();
         const employee = await Employee.create({
             id: count + 1001,
@@ -12,7 +12,7 @@ const mutations = {
             _id: employee._id.toString(),
         };
     },
-    updateEmployee: async (_, { input }) => {
+    updateEmployee: async ({ input }) => {
         const { id, ...reqBody } = input;
         const employee = await Employee.findOne({ isDeleted: false, id: id });
 
@@ -30,7 +30,7 @@ const mutations = {
             _id: updatedEmployee._id.toString(),
         };
     },
-    deleteEmployee: async (_, { id }) => {
+    deleteEmployee: async ({ id }) => {
         const employee = await Employee.findOne({ isDeleted: false, id: id });
 
         if (!employee) {
