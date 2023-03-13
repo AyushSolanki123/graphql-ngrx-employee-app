@@ -2,7 +2,7 @@ const ErrorBody = require("../Utils/ErrorBody");
 const Employee = require("../model/Employee").model;
 const router = require("express").Router();
 const bcrpyt = require("bcrypt");
-const { generateAuthPairs } = require("../utils/Helper");
+const { generateAuthPairs, validateAuthToken } = require("../utils/Helper");
 const { body, validationResult } = require("express-validator");
 const { logger } = require("../utils/Logger");
 
@@ -82,7 +82,7 @@ router.post(
         const { errors } = validationResult(req);
 
         if (errors.length > 0) {
-            logger.error("Failed in Login employee" + errors);
+            logger.error("Failed in Register employee" + errors);
             next(new ErrorBody(400, "Invalid Values in form"));
         } else {
             const { email, password } = req.body;
@@ -137,14 +137,14 @@ router.post(
     [body("refreshToken").notEmpty()],
     (req, res, next) => {
         const { errors } = validationResult(req);
-
         if (errors.length > 0) {
-            logger.error("Failed in Login employee" + errors);
+            logger.error("Failed in Refresh Token" + errors);
             next(new ErrorBody(400, "Invalid Values in form"));
         } else {
             const { refreshToken } = req.body;
             validateAuthToken(refreshToken, 1)
                 .then((response) => {
+                    console.log(response);
                     if (response.iat) {
                         delete response.iat;
                     }
@@ -157,9 +157,7 @@ router.post(
                     });
                 })
                 .catch((error) => {
-                    logger.error(
-                        "Failed in refreshToken: " + JSON.stringify(error)
-                    );
+                    logger.error("Failed in refreshToken: " + error);
                     next(
                         new ErrorBody(
                             error.statusCode || 500,

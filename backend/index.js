@@ -53,7 +53,7 @@ app.use(
 // Global Error Handler
 app.use("/", (err, req, res, next) => {
     logger.error("Error occurred");
-    logger.log(JSON.stringify(err));
+    logger.log(err);
     logger.error(err.errorMessage || "Server error occurred");
     res.status(err.statusCode || 500);
     res.json({ errorMessage: err.errorMessage || "Server error occurred" });
