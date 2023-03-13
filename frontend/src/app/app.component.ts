@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EmployeeService } from './service/employee.service';
 import { Router } from '@angular/router';
 import { StorageService } from './service/storage.service';
+import { AuthService } from './service/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ export class AppComponent implements OnInit {
   title = 'Graphql ngrx employee app';
 
   constructor(
-    private employeeService: EmployeeService,
+    private authService: AuthService,
     private router: Router,
     private storageService: StorageService
   ) {}
@@ -21,7 +22,7 @@ export class AppComponent implements OnInit {
     const { authToken } = this.storageService.getTokenPair();
 
     if (authToken) {
-      this.employeeService.checkLoginStatus().subscribe(({ status }) => {
+      this.authService.checkLoginStatus().subscribe(({ status }) => {
         if (status) {
           this.router.navigateByUrl('/list');
         } else {

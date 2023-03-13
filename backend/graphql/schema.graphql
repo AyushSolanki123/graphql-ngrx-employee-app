@@ -4,6 +4,8 @@ type Employee {
     firstName: String!
     lastName: String
     dob: String
+    email: String!
+    password: String!
     company: String!
     isDeleted: Boolean!
 }

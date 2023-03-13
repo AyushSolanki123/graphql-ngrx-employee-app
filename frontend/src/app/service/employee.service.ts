@@ -1,39 +1,76 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Apollo } from 'apollo-angular';
+import { Observable, map } from 'rxjs';
 import { Employee } from './Employee';
-import { StorageService } from './storage.service';
+import { GET_EMPLOYEE, LIST_EMPLOYEES } from '../graphql/queries';
+import {
+  ADD_EMPLOYEE,
+  DELETE_EMPLOYEE,
+  UPDATE_EMPLOYEE,
+} from '../graphql/mutations';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
-  authApiUrl: string = 'http://localhost:4000/auth';
-  constructor(
-    private http: HttpClient,
-    private storageService: StorageService
-  ) {}
+  constructor(private apollo: Apollo) {}
 
-  login(payload: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(this.authApiUrl + '/login', payload);
-  }
-
-  register(payload: Employee): Observable<any> {
-    return this.http.post<any>(this.authApiUrl + '/register', payload);
-  }
-
-  refreshToken(refreshToken: string): Observable<{ authToken: string }> {
-    return this.http.post<{ authToken: string }>(
-      this.authApiUrl + '/refreshToken',
-      { refreshToken }
+  listEmployees(): Observable<Employee[]> {
+    return this.apollo.query({ query: LIST_EMPLOYEES }).pipe(
+      map((result: any) => {
+        return result.data.listEmployee;
+      })
     );
   }
 
-  checkLoginStatus(): Observable<{ status: boolean }> {
-    const { authToken } = this.storageService.getTokenPair();
-    return this.http.post<{ status: boolean }>(
-      this.authApiUrl + '/checkLoginStatus',
-      { authToken }
-    );
+  getEmployee(id: number): Observable<Employee> {
+    return this.apollo
+      .query({
+        query: GET_EMPLOYEE,
+        variables: {
+          id: id,
+        },
+      })
+      .pipe(
+        map((result: any) => {
+          return result.data.getEmployee;
+        })
+      );
+  }
+
+  addEmployee(payload: Employee): Observable<Employee> {
+    return this.apollo
+      .mutate({
+        mutation: ADD_EMPLOYEE,
+        refetchQueries: [{ query: LIST_EMPLOYEES }],
+        variables: {
+          input: payload,
+        },
+      })
+      .pipe(map((result: any) => result.data.addEmployee));
+  }
+
+  updateEmployee(payload: Employee): Observable<Employee> {
+    return this.apollo
+      .mutate({
+        mutation: UPDATE_EMPLOYEE,
+        refetchQueries: [{ query: LIST_EMPLOYEES }],
+        variables: {
+          input: payload,
+        },
+      })
+      .pipe(map((result: any) => result.data.updateEmployee));
+  }
+
+  deleteEmployee(id: number): Observable<Employee> {
+    return this.apollo
+      .mutate({
+        mutation: DELETE_EMPLOYEE,
+        refetchQueries: [{ query: LIST_EMPLOYEES }],
+        variables: {
+          id: id,
+        },
+      })
+      .pipe(map((result: any) => result.data.deleteEmployee));
   }
 }

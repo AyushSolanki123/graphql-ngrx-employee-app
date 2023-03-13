@@ -14,6 +14,7 @@ import { DeleteEmployeeModalComponent } from './component/delete-employee-modal/
 import { AuthComponent } from './component/auth/auth.component';
 import { LoginComponent } from './component/auth/login/login.component';
 import { RegisterComponent } from './component/auth/register/register.component';
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { RegisterComponent } from './component/auth/register/register.component'
   ],
   imports: [
     BrowserModule,
+    GraphQLModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
