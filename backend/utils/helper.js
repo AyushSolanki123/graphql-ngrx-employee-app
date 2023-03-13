@@ -35,7 +35,22 @@ function validateAuthToken(token, tokenType = 0) {
     });
 }
 
+function checkLoginStatus(authToken) {
+    let result;
+    const options = {
+        expiresIn: authConfig.tokenValidity,
+    };
+    const secret = authConfig.jwtKey;
+    try {
+        result = jwt.verify(authToken, secret, options);
+        if (result) return true;
+    } catch (err) {
+        return false;
+    }
+}
+
 module.exports = {
     generateAuthPairs: generateAuthPairs,
     validateAuthToken: validateAuthToken,
+    checkLoginStatus: checkLoginStatus,
 };

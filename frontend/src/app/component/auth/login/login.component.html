@@ -1,0 +1,26 @@
+<div>
+  <div class="text-center">
+    <span class="h2 fw-bold">Login</span>
+  </div>
+  <div class="mb-3">
+    <label for="email" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="email" [(ngModel)]="email" />
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password"
+      [(ngModel)]="password"
+    />
+  </div>
+  <div class="row gx-5 mx-a">
+    <div class="col justify-start">
+      <button class="btn btn-link" (click)="register()">Register</button>
+    </div>
+    <div class="col justify-end">
+      <button class="btn btn-primary" (click)="login()">Login</button>
+    </div>
+  </div>
+</div>

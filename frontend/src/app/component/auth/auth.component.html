@@ -1,0 +1,21 @@
+<div class="container">
+  <div *ngIf="loading; else loadingBlock" class="wrapper" style="height: 90vh">
+    <h2>Loading...</h2>
+  </div>
+  <ng-template #loadingBlock>
+    <div class="card p-3 constrain mx-a mt-5">
+      <div *ngIf="isLogin; else register">
+        <app-login
+          (onLogin)="onLogin($event)"
+          (onRegister)="changeAuth($event)"
+        ></app-login>
+      </div>
+      <ng-template #register>
+        <app-register
+          (onLogin)="changeAuth($event)"
+          (onRegister)="onRegister($event)"
+        ></app-register>
+      </ng-template>
+    </div>
+  </ng-template>
+</div>

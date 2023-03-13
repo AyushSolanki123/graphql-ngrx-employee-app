@@ -7,9 +7,9 @@
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-modal-body">
-        <h1 class="modal-title fs-5" id="deleteEmployeeLabel">
-          Delete Employee
+      <div class="modal-header bg-modal-body p-3">
+        <h1 class="modal-title fs-5 fw-bold" id="deleteEmployeeLabel">
+          Delete Employee?
         </h1>
         <button
           type="button"
@@ -18,18 +18,17 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body h4 p-2">Confirm Delete employee?</div>
-      <div class="modal-footer bg-modal-body">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
+      <div class="modal-footer bg-modal-body p-3">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+          No
         </button>
         <button
           type="button"
-          class="btn btn-primary"
+          class="btn btn-danger"
           (click)="onSubmit()"
           data-bs-dismiss="modal"
         >
-          Submit
+          Yes
         </button>
       </div>
     </div>

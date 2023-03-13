@@ -2,7 +2,11 @@ const ErrorBody = require("../Utils/ErrorBody");
 const Employee = require("../model/Employee").model;
 const router = require("express").Router();
 const bcrpyt = require("bcrypt");
-const { generateAuthPairs, validateAuthToken } = require("../utils/Helper");
+const {
+    generateAuthPairs,
+    validateAuthToken,
+    checkLoginStatus,
+} = require("../utils/Helper");
 const { body, validationResult } = require("express-validator");
 const { logger } = require("../utils/Logger");
 
@@ -165,6 +169,25 @@ router.post(
                         )
                     );
                 });
+        }
+    }
+);
+
+router.post(
+    "/checkLoginStatus",
+    [body("authToken").notEmpty()],
+    (req, res, next) => {
+        const { errors } = validationResult(req);
+        if (errors.length > 0) {
+            logger.error("Failed in check Login status: " + errors);
+            next(new ErrorBody(401, "Inavlid Values in Form"));
+        } else {
+            const { authToken } = req.body;
+            const status = checkLoginStatus(authToken);
+            res.status(200);
+            res.json({
+                status: status,
+            });
         }
     }
 );
