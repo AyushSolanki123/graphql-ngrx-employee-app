@@ -32,6 +32,7 @@
                     class="clickable mx-3"
                     data-bs-toggle="modal"
                     data-bs-target="#updateEmployee"
+                    (click)="showUpdateEmployee(e)"
                   >
                     <i class="bi bi-pencil-fill"></i>
                   </span>
@@ -39,21 +40,10 @@
                     class="clickable mx-3"
                     data-bs-toggle="modal"
                     data-bs-target="#deleteEmployee"
+                    (click)="showDeleteEmployee(e)"
                   >
                     <i class="bi bi-trash3-fill"></i>
                   </span>
-
-                  <app-add-employee-modal
-                    (addEmployee)="onAddEmployee($event)"
-                  ></app-add-employee-modal>
-                  <app-update-employee-modal
-                    [emp]="e"
-                    (updateEmployee)="onUpdateEmployee($event)"
-                  ></app-update-employee-modal>
-                  <app-delete-employee-modal
-                    [emp]="e"
-                    (deleteEmployee)="onDeleteEmployee($event)"
-                  ></app-delete-employee-modal>
                 </td>
               </tr>
             </tbody>
@@ -79,5 +69,16 @@
         </button>
       </div>
     </div>
+    <app-add-employee-modal
+      (addEmployee)="onAddEmployee($event)"
+    ></app-add-employee-modal>
+    <app-update-employee-modal
+      [emp]="currentEmployee"
+      (updateEmployee)="onUpdateEmployee($event)"
+    ></app-update-employee-modal>
+    <app-delete-employee-modal
+      [emp]="currentEmployee"
+      (deleteEmployee)="onDeleteEmployee($event)"
+    ></app-delete-employee-modal>
   </ng-template>
 </div>

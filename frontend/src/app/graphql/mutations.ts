@@ -1,6 +1,4 @@
-import { gql } from 'apollo-angular';
-
-export const ADD_EMPLOYEE = gql`
+export const ADD_EMPLOYEE = `
   mutation add($input: AddEmployeeInput!) {
     addEmployee(input: $input) {
       _id
@@ -14,7 +12,7 @@ export const ADD_EMPLOYEE = gql`
   }
 `;
 
-export const UPDATE_EMPLOYEE = gql`
+export const UPDATE_EMPLOYEE = `
   mutation update($input: UpdatedEmployeeInput!) {
     updateEmployee(input: $input) {
       _id
@@ -28,7 +26,7 @@ export const UPDATE_EMPLOYEE = gql`
   }
 `;
 
-export const DELETE_EMPLOYEE = gql`
+export const DELETE_EMPLOYEE = `
   mutation delete($id: Int!) {
     deleteEmployee(id: $id) {
       _id

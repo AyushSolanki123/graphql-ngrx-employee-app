@@ -11,6 +11,8 @@ export class AddEmployeeModalComponent {
   fName: string = '';
   lName: string = '';
   dob: string = '';
+  email: string = '';
+  password: string = '';
   company: string = '';
 
   onSubmit() {
@@ -19,6 +21,8 @@ export class AddEmployeeModalComponent {
       lastName: this.lName,
       dob: this.dob,
       company: this.company,
+      email: this.email,
+      password: this.password,
     };
     this.addEmployee.emit(reqBody);
   }

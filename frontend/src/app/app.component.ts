@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { EmployeeService } from './service/employee.service';
 import { Router } from '@angular/router';
 import { StorageService } from './service/storage.service';
 import { AuthService } from './service/auth.service';
+import { Subscription, switchMap, tap, timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,8 @@ import { AuthService } from './service/auth.service';
 })
 export class AppComponent implements OnInit {
   title = 'Graphql ngrx employee app';
+  status!: boolean;
+  private subcription!: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -19,20 +22,28 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const { authToken } = this.storageService.getTokenPair();
-
-    if (authToken) {
-      this.authService.checkLoginStatus().subscribe(({ status }) => {
-        if (status) {
-          this.router.navigateByUrl('/list');
-        } else {
+    this.subcription = timer(0, 5000)
+      .pipe(switchMap(() => this.authService.checkLoginStatus()))
+      .subscribe(
+        (isLoggedIn) => {
+          this.status = isLoggedIn;
+          if (isLoggedIn) {
+            this.router.navigateByUrl('/list');
+          } else {
+            this.storageService.removeTokenPair();
+            this.router.navigateByUrl('/auth');
+          }
+        },
+        (error) => {
+          console.log(error);
           this.storageService.removeTokenPair();
           this.router.navigateByUrl('/auth');
         }
-      });
-    } else {
-      this.storageService.removeTokenPair();
-      this.router.navigateByUrl('/auth');
-    }
+      );
+  }
+  logOut() {
+    this.status = false;
+    this.storageService.removeTokenPair();
+    this.router.navigateByUrl('/auth');
   }
 }

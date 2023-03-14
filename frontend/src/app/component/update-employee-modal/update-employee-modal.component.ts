@@ -13,6 +13,7 @@ export class UpdateEmployeeModalComponent implements OnInit {
   initEmp!: Employee;
 
   ngOnInit(): void {
+    console.log(this.emp);
     this.initEmp = this.emp;
   }
 

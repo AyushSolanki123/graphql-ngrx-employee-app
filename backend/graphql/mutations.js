@@ -1,10 +1,14 @@
 const Employee = require("../model/Employee").model;
+const bcrypt = require("bcrypt");
 
 const mutations = {
     addEmployee: async ({ input }) => {
+        const { password } = input;
         const count = await Employee.find({}).count();
+        const _password = await bcrypt.hash(password, 10);
         const employee = await Employee.create({
             id: count + 1001,
+            password: _password,
             ...input,
         });
         return {

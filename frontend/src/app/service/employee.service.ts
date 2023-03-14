@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import { Observable, map } from 'rxjs';
+import { Apollo, gql } from 'apollo-angular';
+import { Observable, map, of } from 'rxjs';
 import { Employee } from './Employee';
 import { GET_EMPLOYEE, LIST_EMPLOYEES } from '../graphql/queries';
 import {
@@ -8,69 +8,44 @@ import {
   DELETE_EMPLOYEE,
   UPDATE_EMPLOYEE,
 } from '../graphql/mutations';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private authService: AuthService) {}
 
-  listEmployees(): Observable<Employee[]> {
-    return this.apollo.query({ query: LIST_EMPLOYEES }).pipe(
-      map((result: any) => {
-        return result.data.listEmployee;
-      })
-    );
+  async listEmployees(): Promise<Employee[]> {
+    const response = await this.authService.callGraphqlApi(LIST_EMPLOYEES);
+    return response.listEmployee;
   }
 
-  getEmployee(id: number): Observable<Employee> {
-    return this.apollo
-      .query({
-        query: GET_EMPLOYEE,
-        variables: {
-          id: id,
-        },
-      })
-      .pipe(
-        map((result: any) => {
-          return result.data.getEmployee;
-        })
-      );
+  async getEmployee(id: number): Promise<Employee> {
+    const response = await this.authService.callGraphqlApi(GET_EMPLOYEE, {
+      id: id,
+    });
+    return response.getEmployee;
   }
 
-  addEmployee(payload: Employee): Observable<Employee> {
-    return this.apollo
-      .mutate({
-        mutation: ADD_EMPLOYEE,
-        refetchQueries: [{ query: LIST_EMPLOYEES }],
-        variables: {
-          input: payload,
-        },
-      })
-      .pipe(map((result: any) => result.data.addEmployee));
+  async addEmployee(payload: Employee): Promise<Employee> {
+    const response = await this.authService.callGraphqlApi(ADD_EMPLOYEE, {
+      input: payload,
+    });
+    return response.addEmployee;
   }
 
-  updateEmployee(payload: Employee): Observable<Employee> {
-    return this.apollo
-      .mutate({
-        mutation: UPDATE_EMPLOYEE,
-        refetchQueries: [{ query: LIST_EMPLOYEES }],
-        variables: {
-          input: payload,
-        },
-      })
-      .pipe(map((result: any) => result.data.updateEmployee));
+  async updateEmployee(payload: Employee): Promise<Employee> {
+    const response = await this.authService.callGraphqlApi(UPDATE_EMPLOYEE, {
+      input: payload,
+    });
+    return response.updateEmployee;
   }
 
-  deleteEmployee(id: number): Observable<Employee> {
-    return this.apollo
-      .mutate({
-        mutation: DELETE_EMPLOYEE,
-        refetchQueries: [{ query: LIST_EMPLOYEES }],
-        variables: {
-          id: id,
-        },
-      })
-      .pipe(map((result: any) => result.data.deleteEmployee));
+  async deleteEmployee(id: number): Promise<Employee> {
+    const response = await this.authService.callGraphqlApi(DELETE_EMPLOYEE, {
+      id: id,
+    });
+    return response.deleteEmployee;
   }
 }

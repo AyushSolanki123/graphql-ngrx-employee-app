@@ -1,5 +1,9 @@
 <nav class="navbar bg-black text-white">
   <div class="mx-3">{{ title | titlecase }}</div>
+  <div class="float-right mx-3 clickable" *ngIf="status" (click)="logOut()">
+    <i class="bi bi-box-arrow-right"></i>
+    Log out
+  </div>
 </nav>
 <article>
   <router-outlet></router-outlet>

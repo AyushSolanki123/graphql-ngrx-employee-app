@@ -1,6 +1,4 @@
-import { gql } from 'apollo-angular';
-
-export const LIST_EMPLOYEES = gql`
+export const LIST_EMPLOYEES = `
   query list {
     listEmployee {
       _id
@@ -14,7 +12,7 @@ export const LIST_EMPLOYEES = gql`
   }
 `;
 
-export const GET_EMPLOYEE = gql`
+export const GET_EMPLOYEE = `
   query getEmployeeDetails($id: Int!) {
     getEmployee(id: $id) {
       _id

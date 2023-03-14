@@ -15,6 +15,7 @@ import { AuthComponent } from './component/auth/auth.component';
 import { LoginComponent } from './component/auth/login/login.component';
 import { RegisterComponent } from './component/auth/register/register.component';
 import { GraphQLModule } from './graphql.module';
+import { reducers } from './store';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,7 @@ import { GraphQLModule } from './graphql.module';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot(reducers),
   ],
   providers: [],
   bootstrap: [AppComponent],
